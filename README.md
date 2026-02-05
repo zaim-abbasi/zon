@@ -10,6 +10,14 @@ Data serialization implies a cost. Formats like JSON force CPUs to burn cycles p
 
 **ZON** changes the paradigm. It maps files directly to memory. By using pointer-less relative offsets and strict 64-byte alignment, the on-disk format *is* the in-memory representation. It is cache-line friendly, mmap-ready, and requires zero parsing.
 
+```text
+JSON (Traditional):
+[Disk] -> [Read String] -> [Parse Text] -> [Allocate Object] -> [Memory] 🐢
+
+ZON (Zero-Overhead):
+[Disk] ------------------ (mmap) -------------------------> [Memory] 🚀
+```
+
 ## The Evidence
 Benchmarks comparing ZON against standard JSON deserialization for a composite game entity (`Player` struct):
 

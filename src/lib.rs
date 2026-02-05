@@ -298,4 +298,61 @@ mod tests {
         let read_root_text = reader.read_string(root_ptr).expect("Read string from root");
         assert_eq!(read_root_text, text);
     }
+
+    #[test]
+    fn test_complex_struct() {
+        let mut writer = ZonWriter::new();
+        
+        // 1. Write String "Zaim"
+        // returns offset where length is written
+        let name_offset = writer.write_string("Zaim");
+        
+        // 2. Pad to 64-byte alignment for the Player struct
+        // Current length
+        let current_len = writer.len();
+        let remainder = current_len % 64;
+        if remainder != 0 {
+            let padding = 64 - remainder;
+            for _ in 0..padding {
+                writer.buffer.push(0);
+            }
+        }
+        
+        let struct_start = writer.len() as u32;
+        assert_eq!(struct_start % 64, 0, "Struct must be 64-byte aligned");
+        
+        // 3. Write Player struct fields
+        // struct Player { id: u32, score: u32, name: u32 }
+        let player_id: u32 = 1;
+        let player_score: u32 = 9999;
+        
+        writer.write_u32(player_id);     // at struct_start
+        writer.write_u32(player_score);  // at struct_start + 4
+        writer.write_u32(name_offset);   // at struct_start + 8
+        
+        // 4. Set root to the struct start
+        writer.set_root(struct_start);
+        
+        // Finalize
+        let buffer = writer.as_bytes();
+        let reader = ZonReader::new(buffer).expect("Valid buffer");
+        
+        // Reader Logic:
+        // Get root offset (we know it's at file offset 8)
+        let root = reader.read_u32(8).expect("Read root");
+        assert_eq!(root, struct_start);
+        
+        // Read Player fields
+        let id_val = reader.read_u32(root).expect("Read valid id");
+        let score_val = reader.read_u32(root + 4).expect("Read valid score");
+        let name_ptr = reader.read_u32(root + 8).expect("Read valid name ptr");
+        
+        assert_eq!(id_val, player_id);
+        assert_eq!(score_val, player_score);
+        assert_eq!(name_ptr, name_offset);
+        
+        // Resolve name
+        let name = reader.read_string(name_ptr).expect("Read valid string");
+        assert_eq!(name, "Zaim");
+    }
 }

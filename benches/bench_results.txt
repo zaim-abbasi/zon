@@ -1,0 +1,25 @@
+
+running 6 tests
+test header::tests::test_magic_number ... ignored
+test header::tests::test_zon_header_layout ... ignored
+test tests::test_complex_struct ... ignored
+test tests::test_end_to_end ... ignored
+test writer::tests::test_write_primitive_and_string ... ignored
+test writer::tests::test_writer_initialization ... ignored
+
+test result: ok. 0 passed; 0 failed; 6 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+serialization/json_deserialize
+                        time:   [141.49 ns 147.06 ns 153.92 ns]
+                        change: [+23.157% +33.233% +48.848%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 8 outliers among 100 measurements (8.00%)
+  3 (3.00%) high mild
+  5 (5.00%) high severe
+serialization/zon_access
+                        time:   [21.568 ns 21.973 ns 22.474 ns]
+                        change: [+20.732% +24.466% +28.257%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+

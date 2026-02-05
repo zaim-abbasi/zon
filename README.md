@@ -70,5 +70,5 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-zon-format = { path = "." }
+zon-format = "0.1.0"
 ```

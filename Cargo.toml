@@ -9,3 +9,5 @@ documentation = "https://docs.rs/zon-format"
 readme = "README.md"
 keywords = ["serialization", "zero-copy", "performance", "json", "binary"]
 categories = ["encoding", "data-structures", "parsing"]
+
+# ... (keep your dependencies below)

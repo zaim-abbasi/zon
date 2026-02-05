@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use serde::{Deserialize, Serialize};
-use zon::{ZonReader, ZonWriter};
+use zon_format::{ZonReader, ZonWriter};
 
 #[derive(Serialize, Deserialize)]
 struct Player {

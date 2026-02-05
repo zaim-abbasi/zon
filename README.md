@@ -25,7 +25,7 @@ Benchmarks comparing ZON against standard JSON deserialization for a composite g
 ### Usage
 
 ```rust
-use zon::{ZonWriter, ZonReader};
+use zon_format::{ZonWriter, ZonReader};
 
 fn main() {
     // 1. Write Data
@@ -70,5 +70,5 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-zon = { path = "." }
+zon-format = { path = "." }
 ```

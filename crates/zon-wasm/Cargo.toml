@@ -4,12 +4,15 @@ version = "0.1.0"
 edition = "2021"
 description = "WebAssembly bindings for ZON zero-copy serialization."
 license = "MIT"
+repository = "https://github.com/zaim-abbasi/zon"
+keywords = ["zon", "wasm", "webassembly", "serialization", "zero-copy"]
+categories = ["wasm", "encoding"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-zon-core = { path = "../zon-core" }
+zon-lib = { version = "0.1.0", path = "../zon-core" }
 wasm-bindgen = "0.2"
 serde-wasm-bindgen = "0.6"
 serde = { version = "1.0", features = ["derive"] }

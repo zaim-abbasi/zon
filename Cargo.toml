@@ -13,7 +13,7 @@ license = "MIT"
 repository = "https://github.com/zaim-abbasi/zon"
 
 [workspace.dependencies]
-zon-core = { path = "crates/zon-core" }
+zon-lib = { path = "crates/zon-core" }
 criterion = { version = "0.5", features = ["html_reports"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

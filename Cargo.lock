@@ -720,20 +720,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ff05f8caa9038894637571ae6b9e29466c1f4f829d26c9b28f869a29cbe3445"
 
 [[package]]
-name = "zon-core"
+name = "zon-inspector"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "zon-lib",
+]
+
+[[package]]
+name = "zon-lib"
 version = "0.1.0"
 dependencies = [
  "criterion",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "zon-inspector"
-version = "0.1.0"
-dependencies = [
- "serde_json",
- "zon-core",
 ]
 
 [[package]]
@@ -746,5 +746,5 @@ dependencies = [
  "serde_json",
  "wasm-bindgen",
  "wasm-bindgen-test",
- "zon-core",
+ "zon-lib",
 ]

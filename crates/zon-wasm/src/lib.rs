@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use zon_core::{ZonReader, ZonWriter};
+use zon_lib::{ZonReader, ZonWriter};
 
 /// webAssembly wrapper for ZonWriter.
 #[wasm_bindgen]

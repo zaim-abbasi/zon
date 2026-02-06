@@ -1,4 +1,4 @@
-use zon_core::{ZonWriter, ZonReader};
+use zon_lib::{ZonWriter, ZonReader};
 
 fn main() {
     println!("Running ZON Basic Example...");

@@ -2,7 +2,7 @@ use std::env;
 use std::fs;
 use std::process;
 
-use zon_core::ZonReader;
+use zon_lib::ZonReader;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

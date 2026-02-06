@@ -1,0 +1,119 @@
+---
+title: 'Rust SDK'
+description: 'API Reference for the core zon-lib crate.'
+---
+
+The `zon-lib` crate provides the core primitives for zero-copy reading and writing.
+
+## Installation
+
+```toml Cargo.toml
+[dependencies]
+zon-lib = "0.1.0"
+```
+
+## ZonWriter
+
+bulder-pattern struct for creating ZON binaries. It manages the byte buffer and ensures 64-byte alignment.
+
+### Constructor
+
+<ParamField body="new()" type="fn">
+  Creates a new writer with an empty buffer.
+  
+  ```rust
+  let mut writer = ZonWriter::new();
+  ```
+</ParamField>
+
+### Writing Primitives
+
+<ParamField body="write_u32(val: u32) -> u32" type="fn">
+  Writes a 32-bit unsigned integer to the buffer.
+  
+  **Returns:** The offset (pointer) to the written value.
+  
+  ```rust
+  let offset = writer.write_u32(42);
+  ```
+</ParamField>
+
+<ParamField body="write_string(val: &str) -> u32" type="fn">
+  Writes a UTF-8 string to the buffer, prefixed by its length.
+  
+  **Returns:** The offset (pointer) to the length prefix.
+  
+  ```rust
+  let offset = writer.write_string("Hello World");
+  ```
+</ParamField>
+
+### Finalizing
+
+<ParamField body="set_root(offset: u32)" type="fn">
+  Sets the entry point of the ZON file. This writes the offset into the file header.
+  
+  **Critical:** Every ZON file must have a root set before it is valid.
+  
+  ```rust
+  writer.set_root(string_offset);
+  ```
+</ParamField>
+
+<ParamField body="as_bytes() -> &[u8]" type="fn">
+  Returns the underlying byte slice. Use this to write the file to disk.
+</ParamField>
+
+## ZonReader
+
+Zero-copy reader that wraps a byte slice.
+
+### Constructor
+
+<ParamField body="new(buffer: &[u8]) -> Result<Self, &'static str>" type="fn">
+  Validates the file header (Magic bytes `ZON1`) and creates a reader.
+  
+  **Note:** This operation is O(1). It does not scan the file.
+  
+  ```rust
+  let reader = ZonReader::new(buffer)?;
+  ```
+</ParamField>
+
+### Reading Primitives
+
+<ParamField body="read_u32(offset: u32) -> Result<u32, &'static str>" type="fn">
+  Reads a u32 from the absolute offset.
+  
+  ```rust
+  let val = reader.read_u32(offset)?;
+  ```
+</ParamField>
+
+<ParamField body="read_string(offset: u32) -> Result<&str, &'static str>" type="fn">
+  Reads a string from the offset. Returns a `&str` reference pointing directly into the original buffer (Zero-Copy).
+  
+  ```rust
+  let val = reader.read_string(offset)?;
+  ```
+</ParamField>
+
+## Advanced: Nested Structures
+
+To write a "Struct", you simply write its fields first, then write pointers to them.
+
+```rust
+// Simulating: struct User { id: u32, name: String }
+
+// 1. Write the leaf data
+let name_off = writer.write_string("Alice");
+let id_off   = writer.write_u32(101);
+
+// 2. Write the struct (just a sequence of pointers)
+let struct_start = writer.len() as u32;
+writer.write_u32(id_off);
+writer.write_u32(name_off);
+
+// 3. Set root to the struct start
+writer.set_root(struct_start);
+```

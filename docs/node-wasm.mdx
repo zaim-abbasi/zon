@@ -1,0 +1,76 @@
+---
+title: 'Node.js (WASM)'
+description: 'API Reference for the @zaim-abbasi/zon-wasm bridge.'
+---
+
+The `@zaim-abbasi/zon-wasm` package brings Rust-level performance to Node.js environments.
+
+## Installation
+
+```bash
+npm install @zaim-abbasi/zon-wasm
+```
+
+## Serialization
+
+<ParamField body="serialize_to_zon(data: Object) -> Uint8Array" type="fn">
+  Converts a JavaScript object directly into a ZON binary buffer.
+  
+  **Supported Types:**
+  - Strings
+  - Numbers (Integer)
+  - *Nested Objects (Coming Soon)*
+  
+  ```javascript
+  const { serialize_to_zon } = require('@zaim-abbasi/zon-wasm');
+  
+  const buffer = serialize_to_zon({ name: "Alice", score: 100 });
+  ```
+</ParamField>
+
+## Deserialization (Reader)
+
+The `ZonReaderWasm` class wraps the binary buffer.
+
+### Constructor
+
+<ParamField body="new ZonReaderWasm(buffer: Uint8Array)" type="constructor">
+  Initializes the reader. Throws if the magic header is invalid.
+  
+  ```javascript
+  const reader = new ZonReaderWasm(buffer);
+  ```
+</ParamField>
+
+### Methods
+
+<ParamField body="get_root() -> number" type="method">
+  Returns the offset to the root data item defined in the file header.
+</ParamField>
+
+<ParamField body="read_string(offset: number) -> string" type="method">
+  Reads a UTF-8 string from the given offset.
+  
+  ```javascript
+  const name = reader.read_string(offset);
+  ```
+</ParamField>
+
+<ParamField body="read_u32(offset: number) -> number" type="method">
+  Reads an unsigned 32-bit integer from the given offset.
+</ParamField>
+
+## Memory Management
+
+### Zero-Copy in JS?
+
+When you pass a `Buffer` or `Uint8Array` to `ZonReaderWasm`, the WASM memory view is created over that buffer.
+
+**Warning:** If you modify the underlying buffer while the reader is active, you may read corrupt data.
+
+```javascript
+// ✅ Efficient
+const buffer = list.read_from_socket();
+const reader = new ZonReaderWasm(buffer); 
+// reader accesses 'buffer' memory directly
+```

@@ -1,0 +1,60 @@
+---
+title: 'Benchmarks'
+description: 'Performance comparisons: ZON vs. JSON vs. Protobuf.'
+---
+
+## The Core Metric: 18.83ns
+
+In our standardized benchmark (Game Entity Access), accessing a field in ZON takes **~18 nanoseconds**.
+Accessing the same field in JSON takes **~117 nanoseconds**.
+
+<CardGroup cols={2}>
+  <Card title="JSON Access Time" icon="stopwatch" color="#ef4444">
+    117.43 ns
+    <br/>
+    *(Parsing Overhead)*
+  </Card>
+  <Card title="ZON Access Time" icon="bolt" color="#10B981">
+    18.83 ns
+    <br/>
+    *(Direct Memory)*
+  </Card>
+</CardGroup>
+
+## Throughput
+
+When processing millions of entities per second, this difference compounds massively.
+
+| Format | Ops / Sec | Scaling Factor |
+| :--- | :--- | :--- |
+| **JSON** | 8.5 Million | 1x |
+| **ZON** | **53.1 Million** | **6.2x** |
+
+## Methodology
+
+### The Workload
+We simulate a typical "Player" entity in a multiplayer game:
+
+```rust
+struct Player {
+    id: u32,
+    name: String,
+    score: u32,
+    inventory: Vec<String>,
+}
+```
+
+### The Test Environment
+*   **CPU**: Consumer Workstation (Ryzen 5000 series equivalent)
+*   **Memory**: DDR4 3200MHz
+*   **OS**: Windows 11 / Linux Kernel 6.x
+
+### Why is JSON slow?
+1.  **Read String**: The CPU must read characters until it finds a quote `"` or brace `}`.
+2.  **Parse Number**: ASCII `"123"` must be converted to integer `123`.
+3.  **Allocate**: New memory is allocated for every string and object.
+
+### Why is ZON fast?
+1.  **Jump**: The CPU reads a 32-bit integer offset.
+2.  **Read**: It jumps exactly to that address.
+3.  **Done**: The data is already in the correct binary format (Native Endian).

@@ -1,0 +1,79 @@
+---
+title: 'Welcome to ZON'
+description: 'The Zero-Overhead Notation for High-Performance Systems'
+---
+
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.svg"
+  alt="Hero Light"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.svg"
+  alt="Hero Dark"
+/>
+
+# Why ZON?
+
+In high-frequency trading (HFT) and multiplayer gaming, **latency is the enemy**.
+
+Traditional formats like JSON and Protobuf introduce a hidden tax: **parsing**. Every time you read a message, your CPU burns cycles checking syntax, allocating strings, and decoding schemas.
+
+**ZON eliminates this tax.**
+
+It maps files directly to memory. By using pointer-less relative offsets and strict **64-byte alignment** (cache-line friendly), the on-disk format **is** the in-memory representation.
+
+## The 3 Core Pillars
+
+<CardGroup cols={3}>
+  <Card
+    title="Zero-Copy"
+    icon="bolt"
+    color="#FFB000"
+  >
+    Data is read directly from the buffer. No parsing. No allocation. No GC pressure.
+  </Card>
+  <Card
+    title="Schema-Less"
+    icon="shapes"
+    color="#0066FF"
+  >
+    Self-describing binary format. No `.proto` files to compile or manage.
+  </Card>
+  <Card
+    title="WASM-Native"
+    icon="globe"
+    color="#10B981"
+  >
+    Built for the web. Bridges Rust performance to Node.js and Browser environments.
+  </Card>
+</CardGroup>
+
+## Performance at a Glance
+
+Benchmarks vs. JSON for a standard Game Entity:
+
+| Metric | JSON | ZON | Improvement |
+| :--- | :--- | :--- | :--- |
+| **Access Time** | ~117.43 ns | **~18.83 ns** | <span style={{color: "#10B981"}}>**6.2x Faster**</span> |
+| **Throughput** | ~8.5 M ops/s | **~53.1 M ops/s** | <span style={{color: "#10B981"}}>**6.2x Higher**</span> |
+
+## Get Started
+
+<CardGroup cols={2}>
+  <Card
+    title="Installation"
+    icon="download"
+    href="/installation"
+  >
+    Set up the Rust Core and Node.js Bridge.
+  </Card>
+  <Card
+    title="Quickstart"
+    icon="play"
+    href="/quickstart"
+  >
+    Write your first ZON file in 5 minutes.
+  </Card>
+</CardGroup>

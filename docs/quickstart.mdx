@@ -1,0 +1,82 @@
+---
+title: 'Quickstart'
+description: 'Build a full-stack ZON application: Rust Writer -> Node.js Reader.'
+---
+
+In this guide, we will simulate a real-world scenario:
+1.  **Rust Service**: Generates a high-performance binary file (`data.zon`).
+2.  **Node.js Service**: Reads the file instantly without parsing.
+
+## 1. Rust Writer (The Producer)
+
+Create a new Rust file (e.g., `producer.rs`) to generate the data.
+
+```rust producer.rs
+use zon_lib::{ZonWriter, ZonReader};
+use std::fs::File;
+use std::io::Write;
+
+fn main() -> std::io::Result<()> {
+    // 1. Initialize the Zero-Copy Writer
+    let mut writer = ZonWriter::new();
+    
+    // 2. Write Data
+    // Strings and numbers are written to the buffer, returning offsets.
+    let name_offset = writer.write_string("PlayerOne");
+    let score_offset = writer.write_u32(9999);
+    
+    // 3. Set Root
+    // The "Root" is the entry point of your file. Here, we point to the name.
+    writer.set_root(name_offset);
+    
+    // 4. Save to Disk
+    let mut file = File::create("data.zon")?;
+    file.write_all(writer.as_bytes())?;
+    
+    println!("Successfully wrote data.zon");
+    Ok(())
+}
+```
+
+<Callout type="info">
+  **Why Offsets?** ZON doesn't store data in a JSON tree. It stores data linearly and uses 32-bit offsets (pointers) to link them. This allows O(1) jump access.
+</Callout>
+
+## 2. Node.js Reader (The Consumer)
+
+Now, let's read that file in Node.js using the WASM bridge.
+
+```javascript consumer.js
+const fs = require('fs');
+const { ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+
+// 1. Read the binary file into memory
+const buffer = fs.readFileSync('data.zon');
+
+// 2. Initialize the WASM Reader
+// This wraps the buffer without copying it.
+const reader = new ZonReaderWasm(buffer);
+
+// 3. Get the Root Offset
+// This matches the 'set_root' call in Rust.
+const root = reader.get_root();
+
+// 4. Read Data
+// We know the root points to a string, so we read it as a string.
+console.log("Player Name:", reader.read_string(root)); 
+// Output: Player Name: PlayerOne
+```
+
+## 3. Visualize with Inspector
+
+You can also verify the file structure without writing code:
+
+```bash
+zon-inspector data.zon
+```
+
+**Output:**
+```text
+[HEADER] Magic: ZON1 | Size: ...
+[offset] String: "PlayerOne"
+```

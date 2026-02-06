@@ -1,0 +1,24 @@
+---
+title: 'CLI Inspector'
+description: 'Debug and visualize ZON files.'
+---
+
+The `zon-inspector` is a terminal tool indispensable for debugging. Since ZON is binary, you cannot open it in Notepad.
+
+## Commands
+
+<ParamField body="zon-inspector <FILE>" type="command">
+  Dumps the structure of the given `.zon` file to stdout.
+</ParamField>
+
+## Reading the Output
+
+```text
+[HEADER] Magic: ZON1 | Size: 48 bytes
+[0x00] String: "Hero"
+[0x10] Root Offset -> pointing to 0x00
+```
+
+1.  **Header Check**: Verifies the file starts with `ZON1`.
+2.  **Objects**: Decodes strings and known structures.
+3.  **Pointers**: Visualizes where offsets point to (e.g., `-> 0x00`).

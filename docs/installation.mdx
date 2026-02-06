@@ -1,0 +1,60 @@
+---
+title: 'Installation'
+description: 'Get up and running with ZON in under 1 minute.'
+---
+
+## Prerequisites
+
+ZON is built for the Rust and Node.js ecosystems. Ensure you have the following installed:
+
+*   **Rust**: v1.70 or higher (for `zon-lib`)
+*   **Node.js**: v18 or higher (for `zon-wasm`)
+
+<CodeGroup>
+
+```bash Rust (Cargo)
+# 1. Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# 2. Add ZON to your project
+cargo add zon-lib
+```
+
+```bash Node.js (NPM)
+# Install the WASM Bridge
+npm install @zaim-abbasi/zon-wasm
+```
+
+```bash CLI Tool
+# Install the Inspector globally
+cargo install zon-inspector
+```
+
+</CodeGroup>
+
+## Verification
+
+Verify your installation by checking the version of the `zon-inspector`.
+
+<Steps>
+  <Step title="Run Version Check">
+    Execute the following command in your terminal:
+    ```bash
+    zon-inspector --version
+    ```
+  </Step>
+  <Step title="Confirm Output">
+    You should see an output similar to:
+    ```text
+    zon-inspector 0.1.0
+    ```
+  </Step>
+</Steps>
+
+## Next Steps
+
+Now that you have the tools installed, let's write your first ZON file.
+
+<Card title="Quickstart Guide" icon="arrow-right" href="/quickstart">
+  Create a Rust Writer and a Node.js Reader.
+</Card>

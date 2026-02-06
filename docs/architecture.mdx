@@ -1,0 +1,45 @@
+---
+title: 'Architecture'
+description: 'Deep dive into the 64-Byte Aligned Binary Layout.'
+---
+
+ZON is built on a "Flat-Buffer" philosophy. It is not designed to be human-readable; it is designed to be **CPU-readable**.
+
+## 64-Byte Alignment
+
+Modern CPUs fetch data from RAM in "Cache Lines". A typical cache line is **64 bytes**.
+
+If your data straddles two cache lines (e.g., bytes 60-68), the CPU must fetch **two** lines to read one integer. This causes a "Cache Miss" or a double-fetch penalty.
+
+**ZON aligns structures to 64 bytes.**
+This ensures that when the CPU fetches a structure, it likely gets the entire hot path of data in a single cycle.
+
+## Relative Offsets
+
+Traditional pointers (64-bit memory addresses) are invalid when you send a file to another computer.
+ZON uses **32-bit Relative Offsets**.
+
+```text
+[Header] -> Root Offset (0x10)
+...
+[0x10] -> String Length (4)
+[0x14] -> "Hero"
+```
+
+This makes the format:
+1.  **Position Independent**: The file can be loaded anywhere in memory (mmap).
+2.  **Compact**: 32-bit pointers save 50% space vs 64-bit pointers.
+
+## Memory Layout Visualization
+
+```text
++-----------------------+ <--- 0x00
+| Magic (ZON1)          |
+| Version (1)           |
+| Root Offset (Pointer) |
++-----------------------+ <--- 0x40 (Aligned)
+| String Length (4)     |
+| "Hero" (4 bytes)      |
+| Padding (56 bytes)    |
++-----------------------+ <--- 0x80 (Aligned)
+```

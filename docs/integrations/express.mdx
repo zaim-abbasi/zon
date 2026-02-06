@@ -1,0 +1,57 @@
+---
+title: 'Express.js'
+description: 'Drop-in Middleware for Express.'
+---
+
+Integrate ZON into your Express app to instantly handle high-performance binary payloads.
+
+## The "Magic" Middleware
+
+Instead of manually parsing buffers, simply attach this middleware. It detects `application/x-zon` requests and automatically efficiently wraps the body.
+
+```javascript title="zon-middleware.js"
+const { ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+
+const zonMiddleware = (req, res, next) => {
+  if (req.headers['content-type'] === 'application/x-zon') {
+    const chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
+    req.on('end', () => {
+      const buffer = Buffer.concat(chunks);
+      // Zero-Copy wrap
+      req.zon = new ZonReaderWasm(buffer);
+      next();
+    });
+  } else {
+    next();
+  }
+};
+
+module.exports = zonMiddleware;
+```
+
+## Usage
+
+```javascript title="app.js"
+const express = require('express');
+const zonMiddleware = require('./zon-middleware');
+
+const app = express();
+
+// 1. Use the middleware
+app.use(zonMiddleware);
+
+app.post('/api/telemetry', (req, res) => {
+  // 2. Access req.zon directly
+  // No JSON.parse(), no overhead.
+  if (req.zon) {
+    const root = req.zon.get_root();
+    const eventName = req.zon.read_string(root);
+    
+    console.log(`Received Event: ${eventName}`);
+    res.send({ status: 'ok' });
+  }
+});
+
+app.listen(3000);
+```

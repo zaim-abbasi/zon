@@ -68,9 +68,21 @@ When you pass a `Buffer` or `Uint8Array` to `ZonReaderWasm`, the WASM memory vie
 
 **Warning:** If you modify the underlying buffer while the reader is active, you may read corrupt data.
 
+
+## Error Handling
+
+The reader methods throws standard JavaScript `Error` objects if the access is invalid. You should wrap read operations in `try/catch` blocks if dealing with untrusted input.
+
 ```javascript
-// ✅ Efficient
-const buffer = list.read_from_socket();
-const reader = new ZonReaderWasm(buffer); 
-// reader accesses 'buffer' memory directly
+try {
+  const val = reader.read_u32(999999); // Out of bounds
+} catch (e) {
+  console.error(e.message); 
+  // Output: "Read out of bounds" or "Invalid UTF-8"
+}
 ```
+
+**Common Errors:**
+- `Buffer too small for ZonHeader`: The provided buffer is < 50 bytes.
+- `Invalid Magic Number`: The file does not start with `ZON1`.
+- `Read out of bounds`: Attempted to read past the end of the buffer.

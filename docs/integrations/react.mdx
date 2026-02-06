@@ -1,0 +1,61 @@
+---
+title: 'React'
+description: 'Custom useZon Hook for fetching binary data.'
+---
+
+Fetching binary data in React is often complex. Let's make it simple with a custom hook.
+
+## The Hook: `useZon`
+
+This hook fetches a URL, expects a binary response, and wraps it in a reader.
+
+```javascript title="hooks/useZon.js"
+import { useState, useEffect } from 'react';
+import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm';
+
+export function useZon(url) {
+  const [reader, setReader] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(url);
+        const arrayBuffer = await res.arrayBuffer();
+        const uint8 = new Uint8Array(arrayBuffer);
+        
+        // Wrap
+        const zonReader = new ZonReaderWasm(uint8);
+        setReader(zonReader);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchData();
+  }, [url]);
+
+  return { reader, loading, error };
+}
+```
+
+## Component Usage
+
+```javascript title="Profile.jsx"
+import { useZon } from './hooks/useZon';
+
+export function Profile() {
+  const { reader, loading } = useZon('/api/profile.zon');
+
+  if (loading) return <div>Loading Binary Data...</div>;
+
+  // Zero-Copy access in the render loop!
+  const root = reader.get_root();
+  const name = reader.read_string(root);
+
+  return <h1>Hello, {name}</h1>;
+}
+```

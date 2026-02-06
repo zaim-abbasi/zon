@@ -39,23 +39,29 @@
       ]
     },
     {
-      "group": "Performance",
+      "group": "Web Integration (Drop-in)",
       "pages": [
-        "benchmarks",
-        "architecture"
+        "integrations/express",
+        "integrations/fastify",
+        "integrations/nextjs",
+        "integrations/sockets",
+        "integrations/react",
+        "integrations/typescript",
+        "integrations/fetch"
       ]
     },
     {
-      "group": "Ecosystem",
+      "group": "Core SDK (Low Level)",
       "pages": [
-        "rust-sdk",
-        "node-wasm",
-        "cli-inspector"
+        "core/rust-writer",
+        "core/wasm-reader",
+        "core/architecture",
+        "core/benchmarks",
+        "core/cli-inspector"
       ]
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/zaim-abbasi/zon",
-    "twitter": "https://twitter.com/zaimabbasi"
+    "github": "https://github.com/zaim-abbasi/zon"
   }
 }

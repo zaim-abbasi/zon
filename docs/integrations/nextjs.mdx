@@ -1,0 +1,59 @@
+---
+title: 'Next.js'
+description: 'API Route Handler for Next.js App Router.'
+---
+
+Next.js API Routes can consume raw binary streams. Here is how to handle a ZON upload in the App Router.
+
+## Route Handler
+
+Create a route handler at `app/api/upload/route.ts`.
+
+```typescript title="app/api/upload/route.ts"
+import { NextRequest, NextResponse } from 'next/server';
+// Note: You might need to dynamic import WASM in Next.js depending on config
+import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm'; 
+
+export async function POST(req: NextRequest) {
+  // 1. Get the raw ArrayBuffer
+  const blob = await req.blob();
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. Wrap it
+  // Uint8Array is needed for the WASM bridge
+  const uint8 = new Uint8Array(arrayBuffer);
+  const reader = new ZonReaderWasm(uint8);
+  
+  const root = reader.get_root();
+  const data = reader.read_string(root);
+  
+  return NextResponse.json({ 
+    received: data,
+    length: uint8.length 
+  });
+}
+```
+
+<Callout type="warning">
+  **WASM in Next.js**: Ensure your `next.config.js` is configured to support WebAssembly if you encounter build issues.
+</Callout>
+
+## Configuration (Webpack)
+
+To enable WebAssembly in Next.js, you must update your config:
+
+```javascript title="next.config.js"
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  webpack: (config) => {
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      layers: true,
+    };
+    return config;
+  },
+};
+
+module.exports = nextConfig;
+```

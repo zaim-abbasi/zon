@@ -1,0 +1,48 @@
+---
+title: 'TypeScript'
+description: 'Type-Safe Binary Data with ZON.'
+---
+
+The `@zaim-abbasi/zon-wasm` package comes with bundled TypeScript definitions (`.d.ts`). You don't need to install `@types/` packages separately.
+
+## Configuration
+
+Ensure your `tsconfig.json` can resolve the types:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "esnext"
+  }
+}
+```
+
+## Type-Safe Usage
+
+You can import the types explicitly to use in your function signatures.
+
+```typescript title="api.ts"
+import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm';
+
+// 1. Type annotations for your reader function
+export function parseUser(reader: ZonReaderWasm): string {
+    const root = reader.get_root();
+    return reader.read_string(root);
+}
+
+// 2. Handling Serialization
+import { serialize_to_zon } from '@zaim-abbasi/zon-wasm';
+
+interface User {
+    name: string;
+    score: number;
+}
+
+const user: User = { name: "Alice", score: 99 };
+const binary: Uint8Array = serialize_to_zon(user);
+```
+
+<Callout type="info">
+  **IntelliSense**: Your IDE (VS Code) will autocomplete methods like `reader.read_u32(offset)` and prompt you if you pass incorrect parameters.
+</Callout>

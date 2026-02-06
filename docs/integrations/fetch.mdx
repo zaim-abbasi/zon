@@ -1,0 +1,33 @@
+---
+title: 'Fetch API'
+description: 'Universal Browser Integration.'
+---
+
+If you are not using a framework, or just want to use the standard browser API, here is the pattern.
+
+## The Wrapper
+
+```javascript
+import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm';
+
+async function fetchZon(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Network response was not ok');
+  
+  const arrayBuffer = await response.arrayBuffer();
+  return new ZonReaderWasm(new Uint8Array(arrayBuffer));
+}
+```
+
+## Usage
+
+```javascript
+document.getElementById('load-btn').addEventListener('click', async () => {
+  const reader = await fetchZon('/data/level1.zon');
+  
+  const root = reader.get_root();
+  const levelName = reader.read_string(root);
+  
+  console.log('Loaded Level:', levelName);
+});
+```

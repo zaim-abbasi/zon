@@ -1,0 +1,46 @@
+---
+title: 'Fastify'
+description: 'High-Performance Content Parser for Fastify.'
+---
+
+Fastify is built for speed. ZON is built for speed. They are a perfect match.
+
+## Content Type Parser
+
+Fastify allows you to register custom content type parsers. We can register one for `application/x-zon` that performs the zero-copy wrap.
+
+```javascript title="server.js"
+const fastify = require('fastify')({ logger: true });
+const { ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+
+// 1. Register the Parser
+fastify.addContentTypeParser('application/x-zon', { parseAs: 'buffer' }, (req, body, done) => {
+  try {
+    // 'body' is already a Buffer here.
+    // We wrapped it instantly.
+    const reader = new ZonReaderWasm(body);
+    done(null, reader);
+  } catch (err) {
+    done(err);
+  }
+});
+
+// 2. Use it in a route
+fastify.post('/api/ingest', (req, reply) => {
+  // req.body IS the ZonReaderWasm instance
+  const reader = req.body;
+  const root = reader.get_root();
+  
+  return {
+    accepted: true,
+    event: reader.read_string(root)
+  };
+});
+
+try {
+  fastify.listen({ port: 3000 });
+} catch (err) {
+  fastify.log.error(err);
+  process.exit(1);
+}
+```

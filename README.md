@@ -5,6 +5,7 @@
   
   [![Crates.io](https://img.shields.io/crates/v/zon-lib.svg)](https://crates.io/crates/zon-lib)
   [![NPM](https://img.shields.io/npm/v/@zaim-abbasi/zon-wasm.svg)](https://www.npmjs.com/package/@zaim-abbasi/zon-wasm)
+  [![Documentation](https://img.shields.io/badge/docs-zon.mintlify.app-10B981?style=flat&logo=mintlify&logoColor=white)](https://zon.mintlify.app)
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
   [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 </div>
@@ -108,11 +109,14 @@ zon-inspector data.zon
 
 ---
 
-## 📖 Documentation & API Reference
+## � Documentation
 
-ZON is built for professional integration. For detailed API documentation, error types, and advanced memory layout specifications, please visit:
+| **Platform** | **Best For...** | **Link** |
+| :--- | :--- | :--- |
+| **Mintlify** | 🚀 **Start Here:** Integrations, Architecture, & Guides | [**zon.mintlify.app**](https://zon.mintlify.app) |
+| **Docs.rs** | ⚙️ **Deep Dive:** Rust API Reference & Internals | [**docs.rs/zon-lib**](https://docs.rs/zon-lib) |
 
-👉 [ZON Documentation on docs.rs](https://docs.rs/zon-lib)
+> **Recommendation:** Start with the [**Official Guide**](https://zon.mintlify.app) to see how to drop ZON into Next.js, React, or Express in under 5 minutes.
 
 ---
 
@@ -125,6 +129,33 @@ ZON is designed as the core data engine for performance-critical industries, inc
 **Multiplayer Game Servers**: Synchronizing massive entity states with zero serialization overhead.
 
 **Real-Time Analytics**: Ingesting high-volume telemetry without the CPU cost of JSON parsing.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! ZON follows strict performance standards.
+
+### Core Philosophy
+1. **Zero-Copy**: Never allocate memory in the hot path.
+2. **64-Byte Alignment**: Structures must align to CPU cache lines.
+3. **No Panics**: Return `Result` types with descriptive errors.
+
+### Development Setup
+This is a monorepo. Ensure you have Rust and `wasm-pack` installed.
+
+```bash
+# Build & Test Core
+cargo test --workspace
+
+# Build WASM
+cd crates/zon-wasm && wasm-pack build --target nodejs
+```
+
+### Releasing
+1. Bump versions in `crates/*/Cargo.toml`.
+2. Publish `zon-lib` -> Wait 5 mins -> Publish `zon-inspector`.
+3. Run `npm publish` for `zon-wasm`.
 
 ---
 

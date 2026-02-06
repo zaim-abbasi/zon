@@ -73,14 +73,14 @@ console.log(reader.read_string(root)); // "User1"
 use zon_lib::{ZonWriter, ZonReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // 1. Write data using the sdk
+    // 1. write data using the sdk
     let mut writer = ZonWriter::new();
     let name_off = writer.write_string("Hero");
     let score_off = writer.write_u32(9001);
     
     writer.set_root(name_off);
     
-    // 2. Read data (zero-copy)
+    // 2. read data (zero-copy)
     let buffer = writer.as_bytes();
     let reader = ZonReader::new(buffer)?;
     

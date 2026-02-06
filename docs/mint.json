@@ -1,6 +1,11 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "ZON",
+  "favicon": "/favicon.png",
+  "logo": {
+    "light": "/logo/logo.png",
+    "dark": "/logo/logo.png"
+  },
   "colors": {
     "primary": "#10B981",
     "light": "#10B981",

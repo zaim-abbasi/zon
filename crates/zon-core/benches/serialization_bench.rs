@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use serde::{Deserialize, Serialize};
-use zon_format::{ZonReader, ZonWriter};
+use zon_core::{ZonReader, ZonWriter};
 
 #[derive(Serialize, Deserialize)]
 struct Player {
@@ -23,24 +23,24 @@ fn bench_serialization(c: &mut Criterion) {
     // --- ZON Setup ---
     let mut writer = ZonWriter::new();
     
-    // 1. Write Name
+    // 1. write Name
     let name_offset = writer.write_string("Zaim");
     
-    // 2. Pad to 64-byte alignment
-    // We are at some offset. Note: write_string guarantees 4-byte aligned end.
-    // We need to write padding zeros until writer.len() % 64 == 0.
+    // 2. pad to 64-byte alignment
+    // we are at some offset. Note: write_string guarantees 4-byte aligned end.
+    // we need to write padding zeros until writer.len() % 64 == 0.
     // effective padding can be done by writing u32(0) repeatedly since we are 4-byte aligned.
     while writer.len() % 64 != 0 {
         writer.write_u32(0);
     }
     
     let struct_start = writer.len() as u32;
-    // 3. Write fields
+    // 3. write fields
     writer.write_u32(player.id);
     writer.write_u32(player.score);
     writer.write_u32(name_offset);
     
-    // 4. Set Root
+    // 4. set Root
     writer.set_root(struct_start);
     
     let zon_buffer = writer.as_bytes();
@@ -58,13 +58,13 @@ fn bench_serialization(c: &mut Criterion) {
 
     group.bench_function("zon_access", |b| {
         b.iter(|| {
-            // Includes validation step (ZonReader::new) as requested
+            // includes validation step (ZonReader::new) as requested
             let reader = ZonReader::new(black_box(zon_buffer)).expect("valid buffer");
             
-            // Access Root
+            // access Root
             let root = reader.read_u32(8).unwrap();
             
-            // Read fields
+            // read fields
             let id = reader.read_u32(root).unwrap();
             let score = reader.read_u32(root + 4).unwrap();
             let name_ptr = reader.read_u32(root + 8).unwrap();

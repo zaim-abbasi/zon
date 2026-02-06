@@ -1,8 +1,8 @@
-/// The magic number ZON! (0x5A4F4E21)
+/// the magic number ZON! (0x5A4F4E21)
 pub const ZON_MAGIC: u32 = 0x5A4F4E21;
 
-/// The file header for ZON files.
-/// Must be 64-byte aligned to ensure the start of the data segment
+/// the file header for ZON files.
+/// must be 64-byte aligned to ensure the start of the data segment
 /// is also cache-line aligned.
 #[repr(C, align(64))]
 #[derive(Debug, Clone, Copy)]
@@ -10,7 +10,7 @@ pub struct ZonHeader {
     pub magic: u32,
     pub version: u32,
     pub root: u32,
-    // Reserved space to pad to 64 bytes.
+    // reserved space to pad to 64 bytes.
     // u32 + u32 + u32 = 12 bytes used.
     // 64 - 12 = 52 bytes padding.
     _reserved: [u8; 52],

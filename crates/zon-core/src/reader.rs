@@ -11,9 +11,9 @@ impl<'a> ZonReader<'a> {
             return Err("Buffer too small for ZonHeader");
         }
 
-        // Check magic number (offset 0..4)
-        // Manual check to avoid casting requirement, though casting header is usually fine for read
-        // But let's stick to safe slice checks as requested by "Verification"
+        // check magic number (offset 0..4)
+        // manual check to avoid casting requirement, though casting header is usually fine for read
+        // but let's stick to safe slice checks as requested by "Verification"
         let magic_slice = &buffer[0..4];
         let magic = u32::from_le_bytes(magic_slice.try_into().unwrap());
         if magic != ZON_MAGIC {
@@ -34,7 +34,7 @@ impl<'a> ZonReader<'a> {
     }
 
     pub fn read_string(&self, offset: u32) -> Result<&'a str, &'static str> {
-        // Read length
+        // read length
         let len_offset = offset;
         let len = self.read_u32(len_offset)?;
         

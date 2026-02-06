@@ -1,9 +1,9 @@
-use zon_format::{ZonWriter, ZonReader};
+use zon_core::{ZonWriter, ZonReader};
 
 fn main() {
     println!("Running ZON Basic Example...");
 
-    // 1. Write
+    // 1. write
     let mut writer = ZonWriter::new();
     let text_off = writer.write_string("Hello Zero-Copy World!");
     let num_off = writer.write_u32(42);
@@ -12,7 +12,7 @@ fn main() {
     
     println!("Written {} bytes.", writer.len());
     
-    // 2. Read
+    // 2. read
     let buffer = writer.as_bytes();
     let reader = ZonReader::new(buffer).expect("Buffer verification failed");
     

@@ -1,0 +1,20 @@
+[package]
+name = "zon-core"
+version = "0.1.0"
+edition = "2021"
+description = "6.2x faster than JSON. A zero-copy, memory-mapped data format for high-performance systems."
+license = "MIT"
+repository = "https://github.com/zaim-abbasi/zon"
+documentation = "https://docs.rs/zon-core"
+readme = "../../README.md"
+keywords = ["serialization", "zero-copy", "performance", "json", "binary"]
+categories = ["encoding", "data-structures", "parsing"]
+
+[dev-dependencies]
+criterion = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[[bench]]
+name = "serialization_bench"
+harness = false

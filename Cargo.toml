@@ -1,13 +1,19 @@
-[package]
-name = "zon-format"
+[workspace]
+resolver = "2"
+members = [
+    "crates/zon-core",
+    "crates/zon-inspector",
+    "crates/zon-wasm",
+]
+
+[workspace.package]
 version = "0.1.0"
-edition = "2021"  # Changed to 2021 for maximum compatibility
-description = "6.2x faster than JSON. A zero-copy, memory-mapped data format for high-performance systems."
+edition = "2021"
 license = "MIT"
 repository = "https://github.com/zaim-abbasi/zon"
-documentation = "https://docs.rs/zon-format"
-readme = "README.md"
-keywords = ["serialization", "zero-copy", "performance", "json", "binary"]
-categories = ["encoding", "data-structures", "parsing"]
 
-# ... (keep your dependencies below)
+[workspace.dependencies]
+zon-core = { path = "crates/zon-core" }
+criterion = { version = "0.5", features = ["html_reports"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

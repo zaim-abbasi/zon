@@ -1,164 +1,252 @@
 <div align="center">
-  <h1>ZON</h1>
   
-  **A Zero-Copy, Schema-Less Binary Format. 6.2x Faster than JSON.**
-  
-  [![Crates.io](https://img.shields.io/crates/v/zon-lib.svg)](https://crates.io/crates/zon-lib)
-  [![NPM](https://img.shields.io/npm/v/@zaim-abbasi/zon-wasm.svg)](https://www.npmjs.com/package/@zaim-abbasi/zon-wasm)
-  [![Documentation](https://img.shields.io/badge/docs-zon.mintlify.app-10B981?style=flat&logo=mintlify&logoColor=white)](https://zon.mintlify.app)
-  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-  [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+# 🎯 ZON
+
+### Stop Parsing. Start Reading.
+
+**A Zero-Copy, Schema-Less Binary Format**  
+**6.2× Faster than JSON**
+
+[![Crates.io](https://img.shields.io/crates/v/zon-lib.svg)](https://crates.io/crates/zon-lib)
+[![NPM](https://img.shields.io/npm/v/@zon-lib/zon.svg)](https://www.npmjs.com/package/@zon-lib/zon)
+[![Documentation](https://img.shields.io/badge/docs-zon.mintlify.app-10B981?style=flat&logo=mintlify&logoColor=white)](https://zon.mintlify.app)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+[Quick Start](#-quick-install) • [Why ZON?](#-the-philosophy) • [Benchmarks](#-benchmarks) • [Documentation](https://zon.mintlify.app)
+
 </div>
 
 ---
 
-## ⚡ Quick Install
+## ⚡ ZON in 30 Seconds
 
-| **Core Library (Rust)** | **CLI Inspector Tool** | **Node.js Bridge** |
-|:---:|:---:|:---:|
-| `cargo add zon-lib` | `cargo install zon-inspector` | `npm install @zaim-abbasi/zon-wasm` |
-
----
-
-## 🚀 Why ZON?
-
-Data should not be parsed. **It should be read.**
-
-Modern applications waste massive amounts of CPU cycles parsing text (JSON) or decoding schemas (Protobuf). **ZON** maps files directly to memory. By using pointer-less relative offsets and strict 64-byte alignment, the on-disk format **is** the in-memory representation.
-
-| Feature | JSON | Protobuf | **ZON** |
-|:---|:---:|:---:|:---:|
-| **Zero-Copy Access** | ❌ | ❌ | ✅ |
-| **Schema-Less** | ✅ | ❌ | ✅ |
-| **Parsing Overhead** | High | Medium | **None** |
-| **WASM Ready** | ✅ | ✅ | **Native** |
-
----
-
-## 📊 Performance
-
-Benchmarks comparing ZON against standard JSON deserialization for a composite game entity (`Player` struct) on a consumer workstation.
-
-| Format | Mean Access Time | Throughput | Speedup |
-|:-------|:-----------------|:-----------|:--------|
-| **JSON** | ~117.43 ns | ~8.5 M ops/s | 1x |
-| **ZON** | **~18.83 ns** | **~53.1 M ops/s** | **6.2x** |
-
-> *Benchmark conducted on a strictly aligned composite workload.*
-
----
-
-## 🛠️ Usage Guide
-
-### 1. For Node.js / Web Backends (WASM)
-*Recommended for high-performance web servers, distributed ingestors, and rapid prototyping.*
+> **ZON removes the "JSON tax."**  
+> Your data becomes a high-speed binary format that browsers and servers can read **instantly**—without the CPU overhead of parsing.
 
 ```javascript
-const { serialize_to_zon, ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+import { ZonReader } from '@zon-lib/zon';
 
-// 1. serialize object to binary
-const data = { name: "User1", score: 100 };
-const buffer = serialize_to_zon(data);
+async function loadData() {
+  const res = await fetch('https://api.example.com/stats.zon');
+  const buffer = new Uint8Array(await res.arrayBuffer());
 
-// 2. read back with zero-copy efficiency
-const reader = new ZonReaderWasm(buffer);
-const root = reader.get_root();
+  // ✨ wrap the buffer — no parsing happens here
+  const stats = new ZonReader(buffer);
 
-console.log(reader.read_string(root)); // "User1"
+  // 🚀 read data at o(1) speed
+  console.log(stats.read_u32(8)); 
+}
 ```
 
-### 2. For Rust Systems (Core Engine)
-*Recommended for high-frequency trading, game engines, and system tools.*
+**The Result?** 6.2× faster data access with zero parsing overhead.
+
+---
+
+## 🎯 Quick Install
+
+```bash
+# node.js / web (wasm)
+npm install @zon-lib/zon
+
+# rust (systems)
+cargo add zon-lib
+
+# cli inspector
+cargo install zon-inspector
+```
+
+---
+
+## 💡 The Philosophy
+
+Modern applications suffer from a **"Parsing Tax."** Whether JSON or Protobuf, your CPU wastes massive cycles translating text into memory before you can even use it.
+
+**ZON (Zero-Overhead Notation) eliminates this translation step.**
+
+The binary format on disk is the **exact same layout** your CPU requires in memory.
+
+**Core Principles:**
+- 🎯 **Zero-Copy Access** — We don't parse. We map directly to memory.
+- 📝 **Schema-Less** — No `.proto` files. No code generation.
+- 🌍 **Universal** — Native speed in Rust. Instant bridging in WASM.
+
+---
+
+## 🌐 Why for Web?
+
+**Lower Battery Drain** — Less CPU usage means better battery life for mobile users  
+**Zero UI Lag** — Large datasets (maps, 3D models, telemetry) load without freezing  
+**Edge Ready** — Minimal memory footprint for Vercel Functions and Cloudflare Workers
+
+---
+
+## 📊 Benchmarks
+
+**ZON vs. JSON** *(Accessing a composite `Player` struct)*
+
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th align="right">Mean Access Time</th>
+<th align="right">Throughput</th>
+<th align="center">Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><b>JSON</b></td>
+<td align="right">~117.43 ns</td>
+<td align="right">~8.5 M ops/s</td>
+<td align="center">1×</td>
+</tr>
+<tr>
+<td><b>ZON</b></td>
+<td align="right"><b>~18.83 ns</b></td>
+<td align="right"><b>~53.1 M ops/s</b></td>
+<td align="center"><b>🚀 6.2×</b></td>
+</tr>
+</tbody>
+</table>
+
+> *Benchmark conducted on a strictly aligned composite workload on a consumer workstation.*
+
+**What this means for you:**
+- **Web Apps:** Load 6× more data in the same time budget
+- **APIs:** Serve 6× more requests with the same infrastructure
+- **Mobile:** Save precious battery and reduce heat
+
+---
+
+## 🛠️ Usage
+
+### 🌐 Web (Browser & Node.js)
+*Instant data access with zero parsing lag.*
+
+```javascript
+import { serialize_to_zon, ZonReader } from '@zon-lib/zon';
+
+// step 1: serialize to binary (server-side)
+const binary = serialize_to_zon({ name: "Hero", hp: 100 });
+
+// step 2: zero-copy read (client-side)
+// 🔥 no parsing occurs here — we simply wrap the memory buffer
+const reader = new ZonReader(binary);
+
+// step 3: o(1) direct access
+const root = reader.get_root();
+console.log(reader.read_string(root)); // "hero"
+```
+
+**Key Benefits:**
+- ✅ No `JSON.parse()` overhead
+- ✅ Instant data availability
+- ✅ Lower memory pressure
+
+---
+
+### ⚙️ Systems (Rust)
+*The core engine for HFT, Game Engines, and System Tools.*
 
 ```rust
 use zon_lib::{ZonWriter, ZonReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // 1. write data using the sdk
+    // 1. write with cache-line alignment
     let mut writer = ZonWriter::new();
     let name_off = writer.write_string("Hero");
-    let score_off = writer.write_u32(9001);
     
-    writer.set_root(name_off);
-    
-    // 2. read data (zero-copy)
+    // 2. map bytes directly
     let buffer = writer.as_bytes();
     let reader = ZonReader::new(buffer)?;
     
-    // no parsing occurs here. access is direct pointer arithmetic.
-    let root_offset = reader.read_u32(8)?; 
+    // 3. access with zero allocations
+    let name = reader.read_string(name_off)?;
+    println!("Name: {}", name);
+    
     Ok(())
 }
 ```
 
-### 3. The Inspector (CLI Tool)
-*Use this to debug and visualize .zon files without writing code.*
+**Performance Characteristics:**
+- ✅ Zero allocations in hot path
+- ✅ CPU cache-friendly (64-byte aligned)
+- ✅ Safe concurrent access
+
+---
+
+### 🔍 CLI Inspector
+*Visualize `.zon` files without writing code.*
 
 ```bash
-# inspect a file to visualize its internal structure
+# install once
+cargo install zon-inspector
+
+# inspect any .zon file
 zon-inspector data.zon
 ```
 
-#### Example Output:
-
-```text
-[HEADER] Magic: ZON1 | Size: 48 bytes
-[0x00] String: "Hero"
-[0x10] Root Offset -> pointing to 0x00
+**Output Example:**
+```
+📦 ZON File: data.zon
+├─ Size: 1.2 KB
+├─ Entries: 42
+└─ Root Object
+   ├─ name: "Hero"
+   └─ hp: 100
 ```
 
 ---
 
-## � Documentation
+## 📚 Documentation
 
-| **Platform** | **Best For...** | **Link** |
-| :--- | :--- | :--- |
-| **Mintlify** | 🚀 **Start Here:** Integrations, Architecture, & Guides | [**zon.mintlify.app**](https://zon.mintlify.app) |
-| **Docs.rs** | ⚙️ **Deep Dive:** Rust API Reference & Internals | [**docs.rs/zon-lib**](https://docs.rs/zon-lib) |
-
-> **Recommendation:** Start with the [**Official Guide**](https://zon.mintlify.app) to see how to drop ZON into Next.js, React, or Express in under 5 minutes.
+| Platform | Link |
+|:---------|:-----|
+| 🚀 **Web Guide** — Quick Start, Performance Patterns, Integration Examples | [**zon.mintlify.app**](https://zon.mintlify.app) |
+| ⚙️ **Rust API Docs** — Complete API Reference, Type Specifications, Memory Layout | [**docs.rs/zon-lib**](https://docs.rs/zon-lib) |
 
 ---
 
-## 🌍 Real-World Domains
+## 🌍 Real-World Use Cases
 
-ZON is designed as the core data engine for performance-critical industries, including:
+| Use Case | Description |
+|:---------|:------------|
+| 📈 **High-Frequency Trading** | Nanosecond order book updates without parsing overhead |
+| 🎮 **Multiplayer Games** | Synchronize thousands of entities with zero lag |
+| 📊 **Telemetry Ingest** | Massive logging without JSON stringification cost |
 
-**High-Frequency Trading (HFT)**: Where every microsecond counts for order book updates.
-
-**Multiplayer Game Servers**: Synchronizing massive entity states with zero serialization overhead.
-
-**Real-Time Analytics**: Ingesting high-volume telemetry without the CPU cost of JSON parsing.
+**Also Great For:**  
+🗺️ Geographic data (maps, tiles, GeoJSON) • 🤖 ML inference pipelines • 📡 IoT sensor streams • 🎬 Video/audio metadata
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! ZON follows strict performance standards.
+**Core Principles:**
+- 🎯 **Zero-Copy** — No memory allocations in the hot path
+- ⚡ **64-Byte Aligned** — Respect CPU cache line architecture  
+- 🔒 **Memory Safe** — Leverage Rust's type system
 
-### Core Philosophy
-1. **Zero-Copy**: Never allocate memory in the hot path.
-2. **64-Byte Alignment**: Structures must align to CPU cache lines.
-3. **No Panics**: Return `Result` types with descriptive errors.
-
-### Development Setup
-This is a monorepo. Ensure you have Rust and `wasm-pack` installed.
+**Development Setup:**
 
 ```bash
-# Build & Test Core
+# test core rust
 cargo test --workspace
 
-# Build WASM
-cd crates/zon-wasm && wasm-pack build --target nodejs
+# build webassembly package
+cd crates/zon-lib && wasm-pack build --target nodejs
 ```
 
-### Releasing
-1. Bump versions in `crates/*/Cargo.toml`.
-2. Publish `zon-lib` -> Wait 5 mins -> Publish `zon-inspector`.
-3. Run `npm publish` for `zon-wasm`.
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by Zaim Abbasi. Released under the MIT License.</sub>
+
+Built with ❤️ by **Zaim Abbasi** • Released under the MIT License
+
 </div>

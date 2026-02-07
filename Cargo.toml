@@ -3,7 +3,7 @@ resolver = "2"
 members = [
     "crates/zon-core",
     "crates/zon-inspector",
-    "crates/zon-wasm",
+    "crates/zon-lib",
 ]
 
 [workspace.package]

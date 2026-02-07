@@ -33,7 +33,7 @@ fastify.post('/api/ingest', (req, reply) => {
   
   return {
     accepted: true,
-    event: reader.read_string(root)
+    event: reader.readString(root)
   };
 });
 

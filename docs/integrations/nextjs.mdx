@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   const reader = new ZonReader(uint8);
   
   const root = reader.rootOffset;
-  const data = reader.read_string(root);
+  const data = reader.readString(root);
   
   return NextResponse.json({ 
     received: data,

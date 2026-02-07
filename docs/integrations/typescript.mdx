@@ -28,7 +28,7 @@ import { ZonReader } from '@zon-lib/zon';
 // 1. Type annotations for your reader function
 export function parseUser(reader: ZonReader): string {
     const root = reader.rootOffset;
-    return reader.read_string(root);
+    return reader.readString(root);
 }
 
 // 2. Handling Serialization
@@ -44,5 +44,5 @@ const binary: Uint8Array = serialize(user);
 ```
 
 <Callout type="info">
-  **IntelliSense**: Your IDE (VS Code) will autocomplete methods like `reader.read_u32(offset)` and prompt you if you pass incorrect parameters.
+  **IntelliSense**: Your IDE (VS Code) will autocomplete methods like `reader.readU32(offset)` and prompt you if you pass incorrect parameters.
 </Callout>

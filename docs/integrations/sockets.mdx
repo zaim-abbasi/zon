@@ -51,7 +51,7 @@ socket.on("update", (buffer) => {
   
   // 2. Read
   const root = reader.rootOffset;
-  const id = reader.read_string(root); // "Game#1"
+  const id = reader.readString(root); // "Game#1"
   
   console.log("Received Update:", id);
 });

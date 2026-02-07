@@ -26,7 +26,7 @@ document.getElementById('load-btn').addEventListener('click', async () => {
   const reader = await fetchZon('/data/level1.zon');
   
   const root = reader.rootOffset;
-  const levelName = reader.read_string(root);
+  const levelName = reader.readString(root);
   
   console.log('Loaded Level:', levelName);
 });

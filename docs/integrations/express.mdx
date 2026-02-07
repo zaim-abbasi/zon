@@ -46,7 +46,7 @@ app.post('/api/telemetry', (req, res) => {
   // No JSON.parse(), no overhead.
   if (req.zon) {
     const root = req.zon.rootOffset;
-    const eventName = req.zon.read_string(root);
+    const eventName = req.zon.readString(root);
     
     console.log(`Received Event: ${eventName}`);
     res.send({ status: 'ok' });

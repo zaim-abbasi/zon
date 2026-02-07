@@ -34,7 +34,7 @@ async function loadData() {
   const stats = new ZonReader(buffer);
 
   // 🚀 read data at o(1) speed
-  console.log(stats.read_u32(8)); 
+  console.log(stats.readU32(8)); 
 }
 ```
 

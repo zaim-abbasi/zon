@@ -46,18 +46,58 @@ The `ZonReader` class wraps the binary buffer.
 
 <ParamField body="rootOffset" type="getter property">
   Returns the offset to the root data item defined in the file header.
-</ParamField>
-
-<ParamField body="read_string(offset: number) -> string" type="method">
-  Reads a UTF-8 string from the given offset.
   
   ```javascript
-  const name = reader.read_string(offset);
+  const root = reader.rootOffset;
   ```
 </ParamField>
 
-<ParamField body="read_u32(offset: number) -> number" type="method">
+<ParamField body="readString(offset: number) -> string" type="method">
+  Reads a UTF-8 string from the given offset.
+  
+  ```javascript
+  const name = reader.readString(offset);
+  ```
+</ParamField>
+
+<ParamField body="readU32(offset: number) -> number" type="method">
   Reads an unsigned 32-bit integer from the given offset.
+  
+  ```javascript
+  const age = reader.readU32(offset);
+  ```
+</ParamField>
+
+<ParamField body="len() -> number" type="method">
+  Returns the total length of the buffer.
+</ParamField>
+
+## Writing Data (Writer)
+
+For advanced usage, use `ZonWriter` to build a buffer manually.
+
+### Constructor
+
+<ParamField body="new ZonWriter()" type="constructor">
+  Initializes a new empty writer.
+</ParamField>
+
+### Methods
+
+<ParamField body="writeString(val: string) -> number" type="method">
+  Writes a string and returns its offset.
+</ParamField>
+
+<ParamField body="writeU32(val: number) -> number" type="method">
+  Writes a 32-bit integer and returns its offset.
+</ParamField>
+
+<ParamField body="setRoot(offset: number)" type="method">
+  Sets the root offset for the file.
+</ParamField>
+
+<ParamField body="toBytes() -> Uint8Array" type="method">
+  Returns the final binary buffer.
 </ParamField>
 
 ## Memory Management
@@ -75,7 +115,7 @@ The reader methods throws standard JavaScript `Error` objects if the access is i
 
 ```javascript
 try {
-  const val = reader.read_u32(999999); // Out of bounds
+  const val = reader.readU32(999999); // Out of bounds
 } catch (e) {
   console.error(e.message); 
   // Output: "Read out of bounds" or "Invalid UTF-8"

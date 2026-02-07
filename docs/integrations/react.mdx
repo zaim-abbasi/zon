@@ -54,7 +54,7 @@ export function Profile() {
 
   // Zero-Copy access in the render loop!
   const root = reader.rootOffset;
-  const name = reader.read_string(root);
+  const name = reader.readString(root);
 
   return <h1>Hello, {name}</h1>;
 }

@@ -10,7 +10,7 @@ Integrate ZON into your Express app to instantly handle high-performance binary 
 Instead of manually parsing buffers, simply attach this middleware. It detects `application/x-zon` requests and automatically efficiently wraps the body.
 
 ```javascript title="zon-middleware.js"
-const { ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+const { ZonReader } = require('@zon-lib/zon');
 
 const zonMiddleware = (req, res, next) => {
   if (req.headers['content-type'] === 'application/x-zon') {
@@ -19,7 +19,7 @@ const zonMiddleware = (req, res, next) => {
     req.on('end', () => {
       const buffer = Buffer.concat(chunks);
       // Zero-Copy wrap
-      req.zon = new ZonReaderWasm(buffer);
+      req.zon = new ZonReader(buffer);
       next();
     });
   } else {
@@ -45,7 +45,7 @@ app.post('/api/telemetry', (req, res) => {
   // 2. Access req.zon directly
   // No JSON.parse(), no overhead.
   if (req.zon) {
-    const root = req.zon.get_root();
+    const root = req.zon.rootOffset;
     const eventName = req.zon.read_string(root);
     
     console.log(`Received Event: ${eventName}`);

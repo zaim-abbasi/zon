@@ -48,18 +48,18 @@ Now, let's read that file in Node.js using the WASM bridge.
 
 ```javascript consumer.js
 const fs = require('fs');
-const { ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+const { ZonReader } = require('@zon-lib/zon');
 
 // 1. Read the binary file into memory
 const buffer = fs.readFileSync('data.zon');
 
 // 2. Initialize the WASM Reader
 // This wraps the buffer without copying it.
-const reader = new ZonReaderWasm(buffer);
+const reader = new ZonReader(buffer);
 
 // 3. Get the Root Offset
 // This matches the 'set_root' call in Rust.
-const root = reader.get_root();
+const root = reader.rootOffset;
 
 // 4. Read Data
 // We know the root points to a string, so we read it as a string.

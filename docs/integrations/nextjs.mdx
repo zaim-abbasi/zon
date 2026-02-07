@@ -12,7 +12,7 @@ Create a route handler at `app/api/upload/route.ts`.
 ```typescript title="app/api/upload/route.ts"
 import { NextRequest, NextResponse } from 'next/server';
 // Note: You might need to dynamic import WASM in Next.js depending on config
-import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm'; 
+import { ZonReader } from '@zon-lib/zon'; 
 
 export async function POST(req: NextRequest) {
   // 1. Get the raw ArrayBuffer
@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
   // 2. Wrap it
   // Uint8Array is needed for the WASM bridge
   const uint8 = new Uint8Array(arrayBuffer);
-  const reader = new ZonReaderWasm(uint8);
+  const reader = new ZonReader(uint8);
   
-  const root = reader.get_root();
+  const root = reader.rootOffset;
   const data = reader.read_string(root);
   
   return NextResponse.json({ 

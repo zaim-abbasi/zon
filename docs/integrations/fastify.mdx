@@ -11,14 +11,14 @@ Fastify allows you to register custom content type parsers. We can register one 
 
 ```javascript title="server.js"
 const fastify = require('fastify')({ logger: true });
-const { ZonReaderWasm } = require('@zaim-abbasi/zon-wasm');
+const { ZonReader } = require('@zon-lib/zon');
 
 // 1. Register the Parser
 fastify.addContentTypeParser('application/x-zon', { parseAs: 'buffer' }, (req, body, done) => {
   try {
     // 'body' is already a Buffer here.
     // We wrapped it instantly.
-    const reader = new ZonReaderWasm(body);
+    const reader = new ZonReader(body);
     done(null, reader);
   } catch (err) {
     done(err);
@@ -27,9 +27,9 @@ fastify.addContentTypeParser('application/x-zon', { parseAs: 'buffer' }, (req, b
 
 // 2. Use it in a route
 fastify.post('/api/ingest', (req, reply) => {
-  // req.body IS the ZonReaderWasm instance
+  // req.body IS the ZonReader instance
   const reader = req.body;
-  const root = reader.get_root();
+  const root = reader.rootOffset;
   
   return {
     accepted: true,

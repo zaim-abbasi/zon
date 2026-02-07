@@ -11,7 +11,7 @@ The key is to send the raw buffer. Socket.io handles `Uint8Array` natively.
 
 ```javascript title="server.js"
 const { Server } = require("socket.io");
-const { serialize_to_zon } = require("@zaim-abbasi/zon-wasm");
+const { serialize } = require("@zon-lib/zon");
 
 const io = new Server(3000);
 
@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     };
     
     // 1. Serialize to buffer (Zero-Copy on receiver)
-    const binary = serialize_to_zon(gameState);
+    const binary = serialize(gameState);
     
     // 2. Emit raw buffer
     socket.emit("update", binary);
@@ -40,17 +40,17 @@ On the client side, we receive the buffer and wrap it instantly.
 
 ```javascript title="client.js"
 import { io } from "socket.io-client";
-import { ZonReaderWasm } from "@zaim-abbasi/zon-wasm";
+import { ZonReader } from "@zon-lib/zon";
 
 const socket = io("ws://localhost:3000");
 
 socket.on("update", (buffer) => {
   // 1. Wrap (Zero-Copy)
   // Socket.io gives us an ArrayBuffer, we need a Uint8Array
-  const reader = new ZonReaderWasm(new Uint8Array(buffer));
+  const reader = new ZonReader(new Uint8Array(buffer));
   
   // 2. Read
-  const root = reader.get_root();
+  const root = reader.rootOffset;
   const id = reader.read_string(root); // "Game#1"
   
   console.log("Received Update:", id);

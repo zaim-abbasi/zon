@@ -124,18 +124,18 @@ The binary format on disk is the **exact same layout** your CPU requires in memo
 *Instant data access with zero parsing lag.*
 
 ```javascript
-import { serialize_to_zon, ZonReader } from '@zon-lib/zon';
+import { serialize, ZonReader } from '@zon-lib/zon';
 
 // step 1: serialize to binary (server-side)
-const binary = serialize_to_zon({ name: "Hero", hp: 100 });
+const binary = serialize({ name: "Hero", hp: 100 });
 
 // step 2: zero-copy read (client-side)
 // 🔥 no parsing occurs here — we simply wrap the memory buffer
 const reader = new ZonReader(binary);
 
 // step 3: o(1) direct access
-const root = reader.get_root();
-console.log(reader.read_string(root)); // "hero"
+const root = reader.rootOffset;
+console.log(reader.readString(root)); // "hero"
 ```
 
 **Key Benefits:**

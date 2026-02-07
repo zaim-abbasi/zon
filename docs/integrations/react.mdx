@@ -11,7 +11,7 @@ This hook fetches a URL, expects a binary response, and wraps it in a reader.
 
 ```javascript title="hooks/useZon.js"
 import { useState, useEffect } from 'react';
-import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm';
+import { ZonReader } from '@zon-lib/zon';
 
 export function useZon(url) {
   const [reader, setReader] = useState(null);
@@ -26,7 +26,7 @@ export function useZon(url) {
         const uint8 = new Uint8Array(arrayBuffer);
         
         // Wrap
-        const zonReader = new ZonReaderWasm(uint8);
+        const zonReader = new ZonReader(uint8);
         setReader(zonReader);
       } catch (err) {
         setError(err);
@@ -53,7 +53,7 @@ export function Profile() {
   if (loading) return <div>Loading Binary Data...</div>;
 
   // Zero-Copy access in the render loop!
-  const root = reader.get_root();
+  const root = reader.rootOffset;
   const name = reader.read_string(root);
 
   return <h1>Hello, {name}</h1>;

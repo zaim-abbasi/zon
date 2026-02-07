@@ -23,16 +23,16 @@ Ensure your `tsconfig.json` can resolve the types:
 You can import the types explicitly to use in your function signatures.
 
 ```typescript title="api.ts"
-import { ZonReaderWasm } from '@zaim-abbasi/zon-wasm';
+import { ZonReader } from '@zon-lib/zon';
 
 // 1. Type annotations for your reader function
-export function parseUser(reader: ZonReaderWasm): string {
-    const root = reader.get_root();
+export function parseUser(reader: ZonReader): string {
+    const root = reader.rootOffset;
     return reader.read_string(root);
 }
 
 // 2. Handling Serialization
-import { serialize_to_zon } from '@zaim-abbasi/zon-wasm';
+import { serialize } from '@zon-lib/zon';
 
 interface User {
     name: string;
@@ -40,7 +40,7 @@ interface User {
 }
 
 const user: User = { name: "Alice", score: 99 };
-const binary: Uint8Array = serialize_to_zon(user);
+const binary: Uint8Array = serialize(user);
 ```
 
 <Callout type="info">

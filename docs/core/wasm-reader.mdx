@@ -13,7 +13,7 @@ npm install @zaim-abbasi/zon-wasm
 
 ## Serialization
 
-<ParamField body="serialize_to_zon(data: Object) -> Uint8Array" type="fn">
+<ParamField body="serialize(data: Object) -> Uint8Array" type="fn">
   Converts a JavaScript object directly into a ZON binary buffer.
   
   **Supported Types:**
@@ -22,29 +22,29 @@ npm install @zaim-abbasi/zon-wasm
   - *Nested Objects (Coming Soon)*
   
   ```javascript
-  const { serialize_to_zon } = require('@zaim-abbasi/zon-wasm');
+  const { serialize } = require('@zon-lib/zon');
   
-  const buffer = serialize_to_zon({ name: "Alice", score: 100 });
+  const buffer = serialize({ name: "Alice", score: 100 });
   ```
 </ParamField>
 
 ## Deserialization (Reader)
 
-The `ZonReaderWasm` class wraps the binary buffer.
+The `ZonReader` class wraps the binary buffer.
 
 ### Constructor
 
-<ParamField body="new ZonReaderWasm(buffer: Uint8Array)" type="constructor">
+<ParamField body="new ZonReader(buffer: Uint8Array)" type="constructor">
   Initializes the reader. Throws if the magic header is invalid.
   
   ```javascript
-  const reader = new ZonReaderWasm(buffer);
+  const reader = new ZonReader(buffer);
   ```
 </ParamField>
 
 ### Methods
 
-<ParamField body="get_root() -> number" type="method">
+<ParamField body="rootOffset" type="getter property">
   Returns the offset to the root data item defined in the file header.
 </ParamField>
 
@@ -64,7 +64,7 @@ The `ZonReaderWasm` class wraps the binary buffer.
 
 ### Zero-Copy in JS?
 
-When you pass a `Buffer` or `Uint8Array` to `ZonReaderWasm`, the WASM memory view is created over that buffer.
+When you pass a `Buffer` or `Uint8Array` to `ZonReader`, the WASM memory view is created over that buffer.
 
 **Warning:** If you modify the underlying buffer while the reader is active, you may read corrupt data.
 
